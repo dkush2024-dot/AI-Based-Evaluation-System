@@ -24,6 +24,26 @@ if (missingVars.length > 0) {
 const app = express();
 let mongoConnectionPromise;
 
+const allowedOrigins = [
+  process.env.FRONTEND_URL,
+  'https://ai-based-evaluation-system.vercel.app',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+].filter(Boolean);
+
+const corsOptions = {
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`CORS origin not allowed: ${origin}`));
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+};
+
 export async function connectDatabase() {
   if (mongoose.connection.readyState === 1) {
     return mongoose.connection;
@@ -41,7 +61,8 @@ export async function connectDatabase() {
 
 //Middlewares
 app.use(express.json({ limit: '10mb' }));
-app.use(cors());
+app.use(cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 
 // Environment status-
 console.log('Environment variables loaded:');
