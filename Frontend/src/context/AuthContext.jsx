@@ -17,9 +17,8 @@ export const AuthProvider = ({ children }) => {
       const { accessToken } = getToken();
       if (accessToken && !isTokenExpired(accessToken)) {
         try {
-          // Instead of just decoding, we fetch the full user object
-          const response = await getMe();
-          setUser(response.data.user); // The backend wraps the user in response.data.user
+          const userData = await getMe();
+          setUser(userData.user);
         } catch (error) {
           console.error("Failed to fetch user profile, logging out.", error);
           removeToken();
@@ -37,8 +36,7 @@ export const AuthProvider = ({ children }) => {
     setAuthLoading(true);
     try {
       const response = await apiLogin(credentials);
-      // The user object is at response.data.user
-      const loggedInUser = response.data.user; 
+      const loggedInUser = response.user; 
       setUser(loggedInUser);
       if (loggedInUser.role === 'student') {
         navigate('/student-dashboard');
@@ -68,7 +66,7 @@ export const AuthProvider = ({ children }) => {
       } else {
         response = await registerTeacher(userData);
       }
-      const signedUpUser = response.data.user;
+      const signedUpUser = response.user;
       setUser(signedUpUser);
       if (role === 'student') {
         navigate('/student-dashboard');

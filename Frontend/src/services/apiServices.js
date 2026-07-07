@@ -11,7 +11,7 @@ export const login = async (credentials) => {
       refreshToken: response.data.data.refreshToken || null 
     });
   }
-  return response.data;
+  return response.data.data;
 };
 
 export const registerStudent = async (studentData) => {
@@ -22,7 +22,7 @@ export const registerStudent = async (studentData) => {
       refreshToken: response.data.data.refreshToken || null
     });
   }
-  return response.data;
+  return response.data.data;
 };
 
 export const registerTeacher = async (teacherData) => {
@@ -33,12 +33,12 @@ export const registerTeacher = async (teacherData) => {
       refreshToken: response.data.data.refreshToken || null
     });
   }
-  return response.data;
+  return response.data.data;
 };
 
 export const getMe = async () => {
     const response = await apiClient.get('/api/v1/auth/me');
-    return response.data;
+    return response.data.data;
 };
 
 // --- Issue Services ---
